@@ -23,9 +23,61 @@
     <h5>DESCRIPTION: <%=task.getDescription()%></h5>
     <h5>DEADLINE DATE: <%=task.getDeadlineDate()%></h5>
 
-    <%
-        }
-    %>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTaskModal">
+    Редактировать
+</button>
 
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteTaskModal">
+    Удалить
+</button>
+
+<form action="/edit-task" method="post">
+    <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Редактирование задания</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="<%=task.getId()%>" name="task_id">
+                    <label>Наименование:</label>
+                    <input value="<%=task.getName()%>" name="task_name" type="text" class="form-control">
+                    <label class="mt-3">Описание:</label>
+                    <textarea name="task_description" class="form-control"><%=task.getDescription()%></textarea>
+                    <label class="mt-3">Крайний срок:</label>
+                    <input value="<%=task.getDeadlineDate()%>" name="task_deadlineDate" type="date" class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Внести изменения</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form action="/delete-task" method="post">
+    <div class="modal fade" id="deleteTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Вы уверены, что хотите удалить?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <input type="hidden" value="<%=task.getId()%>" name="task_id">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" class="btn btn-danger">Подтвердить удаление</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<%
+    }
+%>
 </body>
 </html>

@@ -65,4 +65,48 @@ public class DBUtil {
     }
     return task;
   }
+
+  public static void addTask(String name, String description, String deadlineDate) {
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+          "insert into tasks(name, deadline_date, description) "
+              + "values (?, ?, ?)");
+      statement.setString(1, name);
+      statement.setString(2, deadlineDate);
+      statement.setString(3, description);
+      statement.executeUpdate();
+      statement.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static void editTask(Task task) {
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+          "update tasks "
+              + "set name = ?, description = ?, deadline_date = ? "
+              + "where id = ?");
+      statement.setString(1, task.getName());
+      statement.setString(2, task.getDescription());
+      statement.setString(3, task.getDeadlineDate());
+      statement.setLong(4, task.getId());
+      statement.executeUpdate();
+      statement.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static void deleteTaskById(Long id) {
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+          "delete from tasks where id=?");
+      statement.setLong(1, id);
+      statement.executeUpdate();
+      statement.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 }
