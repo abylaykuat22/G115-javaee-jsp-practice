@@ -35,7 +35,7 @@
             <td><%=task.getName()%></td>
             <td><%=task.getDeadlineDate()%></td>
             <td><%=task.isStatus() ? "Да" : "Нет"%></td>
-            <td><a class="btn btn-primary" href="#">Детали</a></td>
+            <td><a class="btn btn-primary" href="/details?id=<%=task.getId()%>">Детали</a></td>
         </tr>
         <%
             }

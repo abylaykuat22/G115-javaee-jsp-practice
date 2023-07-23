@@ -1,6 +1,5 @@
 package servlets;
 
-import db.DBManager;
 import db.DBUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,14 +10,15 @@ import java.io.IOException;
 import java.util.List;
 import models.Task;
 
-@WebServlet(value = "/")
-public class HomeServlet extends HttpServlet {
+@WebServlet(value = "/details")
+public class DetailsServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    List<Task> tasks = DBUtil.getTasks();
-    req.setAttribute("zadaniya", tasks);
-    req.getRequestDispatcher("home.jsp").forward(req, resp);
+    Long id = Long.parseLong(req.getParameter("id"));
+    Task task = DBUtil.getTaskById(id);
+    req.setAttribute("zadanie", task);
+    req.getRequestDispatcher("details.jsp").forward(req, resp);
   }
 }
