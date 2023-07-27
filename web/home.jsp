@@ -1,5 +1,7 @@
 <%@ page import="java.util.List" %>
-<%@ page import="models.Task" %><%--
+<%@ page import="models.Task" %>
+<%@ page import="models.Category" %>
+<%@ page import="models.Performer" %><%--
   Created by IntelliJ IDEA.
   User: Kuat
   Date: 18.07.2023
@@ -23,6 +25,10 @@
             <th>Наименование</th>
             <th>Крайний срок</th>
             <th>Выполнено</th>
+            <th>Категория</th>
+            <th>Статус категории</th>
+            <th>Исполнитель</th>
+            <th>Должность исполнителя</th>
             <th>Детали</th>
         </thead>
         <tbody>
@@ -35,6 +41,10 @@
             <td><%=task.getName()%></td>
             <td><%=task.getDeadlineDate()%></td>
             <td><%=task.isStatus() ? "Да" : "Нет"%></td>
+            <td><%=task.getCategory().getName()%></td>
+            <td><%=task.getCategory().getStatus() ? "Активна" : "Не активна"%></td>
+            <td><%=task.getPerformer().getName()%></td>
+            <td><%=task.getPerformer().getPosition()%></td>
             <td><a class="btn btn-primary" href="/details?id=<%=task.getId()%>">Детали</a></td>
         </tr>
         <%
@@ -59,6 +69,28 @@
                 <textarea name="task_description" class="form-control"></textarea>
                 <label class="mt-3">Крайний срок:</label>
                 <input name="task_deadlineDate" type="date" class="form-control">
+                <label class="mt-3">Категория:</label>
+                <select class="form-select" name="category_id">
+                    <%
+                        List<Category> categories = (List<Category>) request.getAttribute("categories");
+                        for (Category cat : categories) {
+                    %>
+                    <option value="<%=cat.getId()%>"><%=cat.getName()%></option>
+                    <%
+                        }
+                    %>
+                </select>
+                <label class="mt-3">Исполнитель:</label>
+                <select class="form-select" name="performer_id">
+                    <%
+                        List<Performer> performers = (List<Performer>) request.getAttribute("performers");
+                        for (Performer perf : performers) {
+                    %>
+                    <option value="<%=perf.getId()%>"><%=perf.getName()%>/<%=perf.getPosition()%></option>
+                    <%
+                        }
+                    %>
+                </select>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

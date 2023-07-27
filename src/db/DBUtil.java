@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import models.Category;
+import models.Performer;
 import models.Task;
 
 public class DBUtil {
@@ -29,7 +32,12 @@ public class DBUtil {
     List<Task> tasks = new ArrayList<>();
     try {
       PreparedStatement statement = connection.prepareStatement(
-          "select * from tasks order by id");
+          "select t.id, t.name, t.description, t.deadline_date, t.category_id, t.performer_id, " +
+                  "c.name as category_name, c.status, p.name as performer_name, p.position " +
+                  "from tasks t " +
+                  "inner join categories c on t.category_id = c.id " +
+                  "inner join performers p on t.performer_id = p.id " +
+                  "order by id");
       ResultSet resultSet = statement.executeQuery();
       while (resultSet.next()) {
         Task task = new Task();
@@ -37,6 +45,19 @@ public class DBUtil {
         task.setName(resultSet.getString("name"));
         task.setDescription(resultSet.getString("description"));
         task.setDeadlineDate(resultSet.getString("deadline_date"));
+
+        Category category = new Category();
+        category.setId(resultSet.getLong("category_id"));
+        category.setName(resultSet.getString("category_name"));
+        category.setStatus(resultSet.getBoolean("status"));
+        task.setCategory(category);
+
+        Performer performer = new Performer();
+        performer.setId(resultSet.getLong("performer_id"));
+        performer.setName(resultSet.getString("performer_name"));
+        performer.setPosition(resultSet.getString("position"));
+        task.setPerformer(performer);
+
         tasks.add(task);
       }
       statement.close();
@@ -46,11 +67,56 @@ public class DBUtil {
     return tasks;
   }
 
+  public static List<Category> getCategories() {
+    List<Category> categories = new ArrayList<>();
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+              "select * from categories");
+      ResultSet resultSet = statement.executeQuery();
+      while (resultSet.next()) {
+        Category category = new Category();
+        category.setId(resultSet.getLong("id"));
+        category.setName(resultSet.getString("name"));
+        category.setStatus(resultSet.getBoolean("status"));
+        categories.add(category);
+      }
+      statement.close();
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+    return categories;
+  }
+
+  public static List<Performer> getPerformers() {
+    List<Performer> performers = new ArrayList<>();
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+              "select * from performers");
+      ResultSet resultSet = statement.executeQuery();
+      while (resultSet.next()) {
+        Performer performer = new Performer();
+        performer.setId(resultSet.getLong("id"));
+        performer.setName(resultSet.getString("name"));
+        performer.setPosition(resultSet.getString("position"));
+        performers.add(performer);
+      }
+      statement.close();
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+    return performers;
+  }
+
   public static Task getTaskById(Long id) {
     Task task = null;
     try {
       PreparedStatement statement = connection.prepareStatement(
-          "select * from tasks where id=?");
+          "select t.id, t.category_id, t.performer_id, t.name, t.description, t.deadline_date, " +
+                  "c.name as category_name, p.name as performer_name " +
+                  "from tasks t " +
+                  "inner join categories c on t.category_id = c.id " +
+                  "inner join performers p on t.performer_id = p.id " +
+                  "where t.id=?");
       statement.setLong(1, id);
       ResultSet resultSet = statement.executeQuery();
       if (resultSet.next()) {
@@ -59,6 +125,16 @@ public class DBUtil {
         task.setName(resultSet.getString("name"));
         task.setDescription(resultSet.getString("description"));
         task.setDeadlineDate(resultSet.getString("deadline_date"));
+
+        Category category = new Category();
+        category.setId(resultSet.getLong("category_id"));
+        category.setName(resultSet.getString("category_name"));
+        task.setCategory(category);
+
+        Performer performer = new Performer();
+        performer.setId(resultSet.getLong("performer_id"));
+        performer.setName(resultSet.getString("performer_name"));
+        task.setPerformer(performer);
       }
     }catch (Exception e) {
       e.printStackTrace();
@@ -66,14 +142,17 @@ public class DBUtil {
     return task;
   }
 
-  public static void addTask(String name, String description, String deadlineDate) {
+  public static void addTask(String name, String description, String deadlineDate,
+                             Long categoryId, Long performerId) {
     try {
       PreparedStatement statement = connection.prepareStatement(
-          "insert into tasks(name, deadline_date, description) "
-              + "values (?, ?, ?)");
+          "insert into tasks(name, deadline_date, description, category_id, performer_id) "
+              + "values (?, ?, ?, ?, ?)");
       statement.setString(1, name);
       statement.setString(2, deadlineDate);
       statement.setString(3, description);
+      statement.setLong(4, categoryId);
+      statement.setLong(5, performerId);
       statement.executeUpdate();
       statement.close();
     } catch (Exception e) {

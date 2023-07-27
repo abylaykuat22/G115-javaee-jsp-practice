@@ -17,7 +17,9 @@ public class AddTaskServlet extends HttpServlet {
     String name = req.getParameter("task_name");
     String description = req.getParameter("task_description");
     String deadlineDate = req.getParameter("task_deadlineDate");
-    DBUtil.addTask(name, description, deadlineDate);
+    Long categoryId = Long.parseLong(req.getParameter("category_id"));
+    Long performerId = Long.parseLong(req.getParameter("performer_id"));
+    DBUtil.addTask(name, description, deadlineDate, categoryId, performerId);
     resp.sendRedirect("/");
   }
 }

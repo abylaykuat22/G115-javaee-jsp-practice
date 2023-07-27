@@ -22,6 +22,8 @@
     <h1>NAME: <%=task.getName()%></h1>
     <h5>DESCRIPTION: <%=task.getDescription()%></h5>
     <h5>DEADLINE DATE: <%=task.getDeadlineDate()%></h5>
+    <h5>CATEGORY: <%=task.getCategory().getName()%></h5>
+    <h5>PERFORMER: <%=task.getPerformer().getName()%></h5>
 
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTaskModal">
