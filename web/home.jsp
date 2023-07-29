@@ -54,7 +54,7 @@
     </table>
 
 <!-- Modal -->
-<form action="/add-task" method="post">
+<form action="/add-task-session" method="post">
 <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -63,6 +63,61 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <%
+                    Task task = (Task) session.getAttribute("task");
+                    if (task != null) {
+                %>
+                <label>Наименование:</label>
+                <input value="<%=task.getName()%>" name="task_name" type="text" class="form-control">
+                <label class="mt-3">Описание:</label>
+                <textarea name="task_description" class="form-control"><%=task.getDescription()%></textarea>
+                <label class="mt-3">Крайний срок:</label>
+                <input value="<%=task.getDeadlineDate()%>" name="task_deadlineDate" type="date" class="form-control">
+                <label class="mt-3">Категория:</label>
+                <select class="form-select" name="category_id">
+                    <%
+                        List<Category> categories = (List<Category>) request.getAttribute("categories");
+                        for (Category cat : categories) {
+                    %>
+                    <%
+                        if (task.getCategory().getId().equals(cat.getId())) {
+                    %>
+                    <option selected value="<%=cat.getId()%>"><%=cat.getName()%></option>
+                    <%
+                        } else {
+                    %>
+                    <option value="<%=cat.getId()%>"><%=cat.getName()%></option>
+                    <%
+                        }
+                    %>
+                    <%
+                        }
+                    %>
+                </select>
+                <label class="mt-3">Исполнитель:</label>
+                <select class="form-select" name="performer_id">
+                    <%
+                        List<Performer> performers = (List<Performer>) request.getAttribute("performers");
+                        for (Performer perf : performers) {
+                    %>
+                    <%
+                        if (task.getPerformer().getId().equals(perf.getId())) {
+                    %>
+                    <option selected value="<%=perf.getId()%>"><%=perf.getName()%>/<%=perf.getPosition()%></option>
+                    <%
+                        } else {
+                    %>
+                    <option value="<%=perf.getId()%>"><%=perf.getName()%>/<%=perf.getPosition()%></option>
+                    <%
+                        }
+                    %>
+                    <%
+                        }
+                    %>
+                </select>
+                <%
+                    } else {
+                %>
                 <label>Наименование:</label>
                 <input name="task_name" type="text" class="form-control">
                 <label class="mt-3">Описание:</label>
@@ -91,10 +146,13 @@
                         }
                     %>
                 </select>
+                <%
+                    }
+                %>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Добавить задание</button>
+                <button type="submit" class="btn btn-primary">Продолжить</button>
             </div>
         </div>
     </div>

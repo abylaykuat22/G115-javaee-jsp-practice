@@ -6,7 +6,6 @@ public class Task {
   private String description;
   private String deadlineDate;
   private Category category;
-
   private Performer performer;
   private boolean status;
 

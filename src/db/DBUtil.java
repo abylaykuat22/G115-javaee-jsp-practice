@@ -10,6 +10,7 @@ import java.util.List;
 import models.Category;
 import models.Performer;
 import models.Task;
+import models.User;
 
 public class DBUtil {
 
@@ -142,6 +143,46 @@ public class DBUtil {
     return task;
   }
 
+  public static Category getCategoryById(Long id) {
+    Category category = null;
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+              "select * from categories where id = ?");
+      statement.setLong(1, id);
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next()) {
+        category = new Category();
+        category.setId(resultSet.getLong("id"));
+        category.setName(resultSet.getString("name"));
+        category.setStatus(resultSet.getBoolean("status"));
+      }
+      statement.close();
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+    return category;
+  }
+
+  public static Performer getPerformerById(Long id) {
+    Performer performer = null;
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+              "select * from performers where id = ?");
+      statement.setLong(1, id);
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next()) {
+        performer = new Performer();
+        performer.setId(resultSet.getLong("id"));
+        performer.setName(resultSet.getString("name"));
+        performer.setPosition(resultSet.getString("position"));
+      }
+      statement.close();
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+    return performer;
+  }
+
   public static void addTask(String name, String description, String deadlineDate,
                              Long categoryId, Long performerId) {
     try {
@@ -187,5 +228,28 @@ public class DBUtil {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public static User getUserByEmailAndPass(String email, String password) {
+    User user = null;
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+              "select * from users where email = ? and password = ?");
+      statement.setString(1, email);
+      statement.setString(2, password);
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next()) {
+        user = new User();
+        user.setId(resultSet.getLong("id"));
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setFullName(resultSet.getString("full_name"));
+        user.setAge(resultSet.getInt("age"));
+      }
+      statement.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return user;
   }
 }

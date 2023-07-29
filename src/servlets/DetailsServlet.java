@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import models.Task;
+import models.User;
 
 @WebServlet(value = "/details")
 public class DetailsServlet extends HttpServlet {
@@ -19,6 +20,10 @@ public class DetailsServlet extends HttpServlet {
     Long id = Long.parseLong(req.getParameter("id"));
     Task task = DBUtil.getTaskById(id);
     req.setAttribute("zadanie", task);
-    req.getRequestDispatcher("details.jsp").forward(req, resp);
+    User user = (User) req.getSession().getAttribute("currentUser");
+    if (user != null) {
+      req.getRequestDispatcher("details.jsp").forward(req, resp);
+    }
+    req.getRequestDispatcher("signin.jsp").forward(req, resp);
   }
 }
