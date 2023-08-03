@@ -14,7 +14,8 @@ import java.io.IOException;
 public class AddTaskServlet extends HttpServlet {
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
     req.getRequestDispatcher("addTaskConfirm.jsp").forward(req, resp);
   }
 
