@@ -9,6 +9,7 @@ import java.util.List;
 
 import models.Blog;
 import models.Category;
+import models.Comment;
 import models.Performer;
 import models.Task;
 import models.User;
@@ -395,6 +396,66 @@ public class DBUtil {
       statement.setString(2, content);
       statement.setLong(3, userId);
       statement.setLong(4, blogId);
+      statement.executeUpdate();
+      statement.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static void addComment(String description, Long blogId, Long userId) {
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+          "insert into comments(description, post_date, blog_id, user_id) "
+              + "values (?, now(), ?, ?)");
+      statement.setString(1, description);
+      statement.setLong(2, blogId);
+      statement.setLong(3, userId);
+      statement.executeUpdate();
+      statement.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static List<Comment> getCommentsByBlogId(Long blogId) {
+    List<Comment> comments = new ArrayList<>();
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+          "select c.id, c.description, c.post_date, c.user_id, c.blog_id, "
+              + "u.full_name, u.age "
+              + " from comments c "
+              + "inner join blogs b on b.id = c.blog_id "
+              + "inner join users u on u.id = c.user_id "
+              + "where b.id = ?");
+      statement.setLong(1, blogId);
+      ResultSet resultSet = statement.executeQuery();
+      while (resultSet.next()) {
+        Comment comment = new Comment();
+        comment.setId(resultSet.getLong("id"));
+        comment.setDescription(resultSet.getString("description"));
+        comment.setPostDate(resultSet.getDate("post_date"));
+
+        User user = new User();
+        user.setId(resultSet.getLong("user_id"));
+        user.setFullName(resultSet.getString("full_name"));
+        user.setAge(resultSet.getInt("age"));
+        comment.setUser(user);
+        comments.add(comment);
+      }
+      statement.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return comments;
+  }
+
+  public static void deleteCommentById(Long id) {
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+          "delete from comments "
+              + "where id = ?");
+      statement.setLong(1, id);
       statement.executeUpdate();
       statement.close();
     } catch (Exception e) {

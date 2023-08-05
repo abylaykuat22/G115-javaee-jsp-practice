@@ -1,5 +1,6 @@
 <%@ page import="models.Blog" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="models.Comment" %><%--
   Created by IntelliJ IDEA.
   User: Kuat
   Date: 18.07.2023
@@ -17,7 +18,7 @@
         Blog blog = (Blog) request.getAttribute("blog");
         if (blog != null) {
     %>
-<div class="col-6 mx-auto">
+<div class="col-6 mx-auto" style="min-height: 1000px">
     <form action="/edit-blog" method="post">
     <label>ID:</label>
     <input readonly type="number" name="id" value="<%=blog.getId()%>" class="form-control"><br>
@@ -70,6 +71,42 @@
             </div>
         </div>
     </form>
+
+    <%
+        User currentUser = (User) session.getAttribute("currentUser");
+    %>
+    <form action="/add-comment" method="post">
+        <label><%=currentUser.getFullName()%></label>
+        <input type="hidden" value="<%=blog.getId()%>" name="blog_id">
+        <textarea name="description" class="form-control" rows="5"></textarea>
+        <button class="btn btn-primary">ADD COMMENT</button>
+    </form>
+    <%
+        List<Comment> comments = (List<Comment>) request.getAttribute("comments");
+        for (Comment comment : comments) {
+    %>
+    <div style="display: flex; justify-content: space-between">
+        <div>
+            <label><%=comment.getUser().getFullName()%> add comment at <%=comment.getPostDate()%></label>
+            <p><%=comment.getDescription()%></p>
+        </div>
+        <div>
+            <%
+             if (comment.getUser().getId().equals(user.getId())) {
+            %>
+            <form action="/delete-comment" method="post">
+                <input type="hidden" value="<%=blog.getId()%>" name="blog_id">
+                <input type="hidden" value="<%=comment.getId()%>" name="comment_id">
+                <button class="btn btn-danger">X</button>
+            </form>
+            <%
+                }
+            %>
+        </div>
+    </div>
+    <%
+        }
+    %>
 </div>
     <%
         }

@@ -21,6 +21,7 @@ public class BlogDetailsServlet extends HttpServlet {
     if (user != null) {
       req.setAttribute("blog", DBUtil.getBlogById(id));
       req.setAttribute("users", DBUtil.getUsers());
+      req.setAttribute("comments", DBUtil.getCommentsByBlogId(id));
       req.getRequestDispatcher("blog-details.jsp").forward(req, resp);
     }
     resp.sendRedirect("/sign-in");
